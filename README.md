@@ -226,6 +226,47 @@ DISPLAY=:1 $ANDROID_HOME/emulator/emulator -avd pixel6_api34 -gpu swiftshader_in
 
 6. Access the emulator by clicking on the globe icon next to port 6080 in the "PORTS" tab, or navigate to the URL shown.
 
+### Emulator Management Commands
+
+Useful commands for working with the emulator:
+
+```bash
+# List all AVDs
+$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list avd
+
+# List running emulators
+$ANDROID_HOME/platform-tools/adb devices
+
+# Delete an AVD
+$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager delete avd --name "pixel6_api34"
+
+# Install APK to emulator
+$ANDROID_HOME/platform-tools/adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+### Testing Your App with the Emulator
+
+Once your emulator is running:
+
+1. Build your debug APK:
+```bash
+./gradlew assembleDebug
+```
+
+2. Install the APK on the emulator:
+```bash
+$ANDROID_HOME/platform-tools/adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+3. Launch your app using its package name:
+```bash
+$ANDROID_HOME/platform-tools/adb shell am start -n com.example.myprogrammingtutor/.MainActivity
+```
+
+## Project Structure
+
+The project follows the standard Android project structure:
+
 - `app/` - Main application module
   - `src/main/` - Main source set
     - `java/` - Kotlin/Java source files
@@ -282,3 +323,22 @@ If you see license errors when downloading SDK components:
 $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
 ```
 Accept all licenses when prompted.
+
+### Emulator Specific Issues
+
+#### Error: KVM is required to run this AVD
+In Codespaces, KVM might not be available. Use the `-gpu swiftshader_indirect` option as shown above.
+
+#### Cannot connect to the emulator
+Try resetting the ADB server:
+```bash
+$ANDROID_HOME/platform-tools/adb kill-server
+$ANDROID_HOME/platform-tools/adb start-server
+```
+
+#### Slow emulator performance
+In Codespaces, emulator performance may be limited. Consider:
+- Reducing emulator window size and resolution
+- Using the `-no-boot-anim` flag
+- Increasing RAM allocation for your Codespace
+- For testing only, consider using Firebase Test Lab or other cloud testing services
